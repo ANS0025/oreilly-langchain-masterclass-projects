@@ -43,7 +43,7 @@ Each project has its own virtual environment and dependencies. To run a specific
 
 5. Run the application:
    ```bash
-   python app.py
+   streamlit run app.py
    ```
 
 ## Environment Variables
