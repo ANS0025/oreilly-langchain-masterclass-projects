@@ -25,7 +25,6 @@ def setup_llm():
         return llm
 
     except Exception as e:
-        logger.error(f"Error setting up LLM: {e}")
         st.error(f"Error setting up LLM: {e}")
         return None
 
@@ -54,8 +53,7 @@ def get_ai_response(question: str, llm: ChatOpenAI) -> Optional[str]:
         st.session_state.messages.append(AIMessage(content=answer.content))
         return answer.content
     
-    except Exception as e:
-        logger.error(f"Error getting AI response: {e}")
+    except Exception:
         st.error("Sorry, I encountered an error. Please try again.")
         return None
     
