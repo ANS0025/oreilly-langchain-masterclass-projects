@@ -16,8 +16,18 @@ load_dotenv()
 # Setup LLM
 @st.cache_resource
 def setup_llm():
-    llm: ChatOpenAI = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0.7)
-    return llm
+    try:
+        if not os.getenv("OPENAI_API_KEY"):
+            st.error("OpenAI API key not found. Please set OPENAI_API_KEY in your environment.")
+            st.stop()
+    
+        llm: ChatOpenAI = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0.7)
+        return llm
+
+    except Exception as e:
+        logger.error(f"Error setting up LLM: {e}")
+        st.error(f"Error setting up LLM: {e}")
+        return None
 
 # Handle user input
 def get_user_input() -> Optional[str]:
@@ -32,11 +42,17 @@ def setup_session_state() -> None:
         ]
 
 # Get answer from LLM
-def get_ai_response(question: str, llm: ChatOpenAI) -> str:
-    st.session_state.messages.append(HumanMessage(content=question))
-    answer: AIMessage = llm.invoke(st.session_state.messages)
-    st.session_state.messages.append(AIMessage(content=answer.content))
-    return answer.content
+def get_ai_response(question: str, llm: ChatOpenAI) -> Optional[str]:
+    try:
+        st.session_state.messages.append(HumanMessage(content=question))
+        answer: AIMessage = llm.invoke(st.session_state.messages)
+        st.session_state.messages.append(AIMessage(content=answer.content))
+        return answer.content
+    
+    except Exception as e:
+        logger.error(f"Error getting AI response: {e}")
+        st.error("Sorry, I encountered an error. Please try again.")
+        return None
 
 # Create the Streamlit app
 def main():
