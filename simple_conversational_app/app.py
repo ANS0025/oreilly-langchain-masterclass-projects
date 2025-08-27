@@ -16,7 +16,7 @@ load_dotenv()
 # Setup LLM
 @st.cache_resource
 def setup_llm():
-    llm: ChatOpenAI = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0)
+    llm: ChatOpenAI = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0.7)
     return llm
 
 # Handle user input
@@ -25,10 +25,11 @@ def get_user_input() -> Optional[str]:
     return input_text
 
 # Simple Stateful Message Memory
-if "messages" not in st.session_state:
-    st.session_state.messages: List[Union[SystemMessage, HumanMessage, AIMessage]] = [
-        SystemMessage(content="You are a helpful assistant.")
-    ]
+def setup_session_state() -> None:
+    if "messages" not in st.session_state:
+        st.session_state.messages: List[Union[SystemMessage, HumanMessage, AIMessage]] = [
+            SystemMessage(content="You are a helpful assistant.")
+        ]
 
 # Get answer from LLM
 def get_ai_response(question: str, llm: ChatOpenAI) -> str:
@@ -40,6 +41,7 @@ def get_ai_response(question: str, llm: ChatOpenAI) -> str:
 # Create the Streamlit app
 def main():
     llm = setup_llm()
+    setup_session_state()
 
     st.set_page_config(page_title="Simple Question Answering App")
     st.header("Simple Question Answering App")
