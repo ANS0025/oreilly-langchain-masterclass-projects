@@ -1,0 +1,9 @@
+langchain
+langchain-openai
+langchain-community
+langchain-experimental
+langchain-google-community
+duckduckgo-search
+ddgs
+streamlit
+python-dotenv
