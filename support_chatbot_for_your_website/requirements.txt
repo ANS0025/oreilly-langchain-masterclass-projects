@@ -1,0 +1,9 @@
+langchain
+langchain-openai
+langchain-community
+langchain-pinecone
+langchain-text-splitters
+streamlit
+lxml
+beautifulsoup4
+python-dotenv
