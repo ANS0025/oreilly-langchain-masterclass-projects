@@ -3,14 +3,17 @@ from langchain_openai import OpenAI, OpenAIEmbeddings
 from langchain_core.prompts import PromptTemplate
 from langchain_pinecone import PineconeVectorStore
 import os
+import streamlit as st
 from pinecone import Pinecone
 
 load_dotenv()
 
+@st.cache_resource
 def _init_llm():
   llm = OpenAI(temperature=0)
   return llm
 
+@st.cache_resource
 def pull_index_data():
     """Connect to existing Pinecone index and return vector store."""
     try:

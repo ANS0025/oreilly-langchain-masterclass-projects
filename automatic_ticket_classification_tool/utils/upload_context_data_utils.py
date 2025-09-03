@@ -106,7 +106,7 @@ def _create_index(pc: Pinecone, index_name: str):
         raise ValueError("Index name cannot be empty")
         
     try:
-        if not pc.has_index(index_name):
+        if index_name not in pc.list_indexes().names():
             print(f"Creating new Pinecone index: {index_name}")
             pc.create_index(
                 name=index_name,
@@ -158,3 +158,29 @@ def store_embeddings_into_vector_store(documents, embeddings):
     except Exception as e:
         print(f"Unexpected error while storing embeddings: {str(e)}")
         raise VectorStoreError(f"Failed to store embeddings: {str(e)}")
+
+def delete_vector_store():
+    """Delete all vectors from the Pinecone index"""
+    try:
+        # Initialize Pinecone Client
+        pc = _initialize_pinecone_client()
+        
+        # Get Index Name
+        pinecone_index_name = os.getenv("PINECONE_INDEX_NAME")
+        if not pinecone_index_name:
+            print("PINECONE_INDEX_NAME not set")
+            raise ValueError("PINECONE_INDEX_NAME environment variable not set")
+            
+        # Delete all vectors
+        if pinecone_index_name in pc.list_indexes().names():
+            index = pc.Index(pinecone_index_name)
+            index.delete(delete_all=True)
+            print(f"All vectors deleted from index: {pinecone_index_name}")
+        else:
+            print(f"Index {pinecone_index_name} does not exist")
+    except (PineconeException, ValueError) as e:
+        print(f"Vector store deletion failed: {str(e)}")
+        raise VectorStoreError(f"Failed to delete vector store: {str(e)}")
+    except Exception as e:
+        print(f"Unexpected error during vector store deletion: {str(e)}")
+        raise VectorStoreError(f"Failed to delete vector store: {str(e)}")

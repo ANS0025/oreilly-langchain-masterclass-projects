@@ -3,13 +3,21 @@ import streamlit as st
 st.title("Pending Tickets")
 st.write("List of pending tickets")
 
-hr_support_tab, it_support_tab, transportation_support_tab = st.tabs(["HR Support", "IT Support", "Transportation Support"])
+# Initialize session state for tickets if not already done
+if 'tickets' not in st.session_state:
+    st.session_state.tickets = {}
 
-with hr_support_tab:
-  st.subheader("Tickets for HR support")
-  
-with it_support_tab:
-  st.subheader("Tickets for IT support")
-  
-with transportation_support_tab:
-  st.subheader("Tickets for transportation support")
+if not st.session_state.tickets:
+    st.info("No pending tickets.")
+else:
+    categories = sorted(st.session_state.tickets.keys())
+    tabs = st.tabs(categories)
+    
+    for i, category in enumerate(categories):
+        with tabs[i]:
+            st.subheader(f"Tickets for {category}")
+            if st.session_state.tickets[category]:
+                for ticket in st.session_state.tickets[category]:
+                    st.write(ticket)
+            else:
+                st.write("No tickets in this category.")
