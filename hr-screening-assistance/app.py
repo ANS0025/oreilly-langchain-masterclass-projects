@@ -1,3 +1,4 @@
+from typing import List, Any
 from os import wait
 from time import sleep
 import streamlit as st
@@ -5,17 +6,17 @@ from utils import create_docs, push_to_pinecone, retrieve_relevant_docs, get_sum
 import uuid
 
 
-def _init_uuid_state():
+def _init_uuid_state() -> None:
     if "uuid" not in st.session_state:
         st.session_state.uuid = ""
 
 
-def _create_uuid():
+def _create_uuid() -> str:
     st.session_state.uuid = str(uuid.uuid4().hex)
     return st.session_state.uuid
 
 
-def main():
+def main() -> None:
     _init_uuid_state()
 
     st.title("HR Screening Assistance")

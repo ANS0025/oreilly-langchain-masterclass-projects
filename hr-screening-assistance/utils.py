@@ -1,4 +1,5 @@
-from pinecone import Pinecone, ServerlessSpec
+from typing import List, Any, Tuple
+from pinecone import Pinecone, ServerlessSpec, Index
 from langchain_core.documents import Document
 from langchain_openai import OpenAIEmbeddings
 from langchain_pinecone import PineconeVectorStore
@@ -11,7 +12,7 @@ import os
 load_dotenv()
 
 
-def _read_pdf_data(file):
+def _read_pdf_data(file: Any) -> str:
     """
     Read PDF data from file and return text
 
@@ -29,7 +30,7 @@ def _read_pdf_data(file):
     return text
 
 
-def _create_embeddings():
+def _create_embeddings() -> OpenAIEmbeddings:
     """
     Create OpenAI embeddings
 
@@ -44,7 +45,7 @@ def _create_embeddings():
         raise e
 
 
-def _create_or_get_index(index_name):
+def _create_or_get_index(index_name: str) -> Index:
     """
     Create or get Pinecone index
 
@@ -80,7 +81,7 @@ def _create_or_get_index(index_name):
 
 
 # Chunk each pdf
-def create_docs(pdf_files, uuid):
+def create_docs(pdf_files: List[Any], uuid: str) -> List[Document]:
     """
     Create documents from PDF files
 
@@ -112,7 +113,7 @@ def create_docs(pdf_files, uuid):
 
 
 # Create embeddings and store to Vector Store
-def push_to_pinecone(docs):
+def push_to_pinecone(docs: List[Document]) -> PineconeVectorStore:
     """
     Push documents to Pinecone vector store
 
@@ -136,7 +137,9 @@ def push_to_pinecone(docs):
         raise e
 
 
-def retrieve_relevant_docs(job_description, num_resumes, vector_store):
+def retrieve_relevant_docs(
+    job_description: str, num_resumes: int, vector_store: PineconeVectorStore
+) -> List[Tuple[Document, float]]:
     """
     Retrieve relevant documents from Pinecone vector store
 
@@ -154,7 +157,7 @@ def retrieve_relevant_docs(job_description, num_resumes, vector_store):
     return similar_docs
 
 
-def get_summary(similar_doc):
+def get_summary(similar_doc: Document) -> str:
     """
     Get summary of similar documents
 
